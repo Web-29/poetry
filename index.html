@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poetry Collection</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #000000;
+            --accent-color: #333333;
+            --subtle-color: #f0f0f0;
+            --transition: all 0.5s ease;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #111111;
+            --text-color: #ffffff;
+            --accent-color: #cccccc;
+            --subtle-color: #222222;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            transition: var(--transition);
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding-top: 4rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+            transition: var(--transition);
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 400;
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            color: var(--accent-color);
+            transition: var(--transition);
+        }
+
+        .poem {
+            margin-bottom: 6rem;
+            padding: 2rem;
+            border-left: 1px solid var(--accent-color);
+            transition: var(--transition);
+        }
+
+        .poem:hover {
+            transform: translateX(10px);
+        }
+
+        .poem-type {
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.8rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .poem-content {
+            white-space: pre-line;
+            transition: var(--transition);
+        }
+
+        .mode-toggle, .music-toggle {
+            position: fixed;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--text-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            z-index: 100;
+            border: none;
+            outline: none;
+        }
+        
+        .mode-toggle {
+            top: 20px;
+            right: 20px;
+        }
+        
+        .music-toggle {
+            top: 90px;
+            right: 20px;
+        }
+
+        .mode-toggle:hover, .music-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .mode-icon, .music-icon {
+            color: var(--bg-color);
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            font-size: 0.8rem;
+            color: var(--accent-color);
+            transition: var(--transition);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .poem {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Subtle animation for page load */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .poem {
+            animation: fadeIn 1s ease-out forwards;
+            opacity: 0;
+        }
+
+        .poem:nth-child(1) {
+            animation-delay: 0.3s;
+        }
+
+        .poem:nth-child(2) {
+            animation-delay: 0.6s;
+        }
+
+        .poem:nth-child(3) {
+            animation-delay: 0.9s;
+        }
+
+        /* Special styles for blank verse */
+        .blank-verse .poem-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Text reveal animation styles */
+        .line-reveal {
+            display: inline;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .line-reveal::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            transform-origin: right;
+            transition: transform 0.8s ease;
+            opacity: 1;
+            pointer-events: none;
+        }
+
+        .line-reveal.active::after {
+            transform: translateX(100%);
+        }
+
+        .line-reveal.revealed::after {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <button class="mode-toggle" aria-label="Toggle dark/light mode">
+        <span class="mode-icon">☼</span>
+    </button>
+    
+    <button class="music-toggle" aria-label="Play/pause background music">
+        <span class="music-icon">♪</span>
+    </button>
+
+    <div class="container">
+        <header>
+            <h1>POETRY COLLECTION</h1>
+            <h3>by Adrian Maier</h3>
+        </header>
+
+        <section class="poem">
+            <div class="poem-type">Sonnet</div>
+            <h2>The Old Country Path</h2>
+            <div class="poem-content">
+Where rolling hills meet ancient forest shade,
+A white-washed cottage stands midst orchards fair,
+Where plum trees bloom in spring's sweet promenade,
+And time moves slow as mist through mountain air.
+The shepherd's flute echoes across the vale,
+While wooden churches watch with crosses worn,
+And weathered hands that tell each ancient tale
+Knead golden bread at every misty morn.
+I dream of wells where waters cool and sweet
+Once quenched my thirst on paths now far behind,
+Where carved wood gates and strangers' smiles would greet
+The weary soul with welcomes true and kind.
+That humble home with hearth of crackling pine,
+Forever burns in memory divine.
+            </div>
+        </section>
+
+        <section class="poem">
+            <div class="poem-type">Villanelle</div>
+            <h2>Dancing on the Rooftop</h2>
+            <div class="poem-content">
+In this city's glow, you dance, wild and free,
+While I watch stars bloom above the distant spires.
+"This moment," I whisper, "is all we need to be."
+
+Your laughter echoes across the parked cars, you see
+The world below us as your joy inspires.
+In this city's glow, you dance, wild and free.
+
+The theater's story fades to memory
+As you twirl beneath European skies on fire.
+"This moment," I whisper, "is all we need to be."
+
+You float between shadows, between you and me
+A universe of moments that never tires.
+In this city's glow, you dance, wild and free.
+
+The lights below us stretch toward the sea,
+Your arms outstretched like wings of pure desire.
+"This moment," I whisper, "is all we need to be."
+
+Remember this rooftop, how we felt deity,
+How time stood still as the world transpired.
+In this city's glow, you dance, wild and free.
+"This moment," I whisper, "is all we need to be."
+            </div>
+        </section>
+
+        <section class="poem blank-verse">
+            <div class="poem-type">Blank Verse</div>
+            <h2>Gold and Stone</h2>
+            <div class="poem-content">
+Gold icons shimmer through the incense veil,
+A forest dense of prayer-worn hands ascends
+While ancient chants, like rivers deep with time,
+Flow through the nave where generations kneel.
+Stone saints observe from weathered facade heights,
+Their faces worn by wind and faithful touch.
+The frescoed walls hold Heaven's hierarchy—
+Christ Pantocrator rules the central dome.
+Candlelight dances on mosaic seas,
+Each flame a soul set burning in the dark.
+The priest, adorned in vestments rich with thread,
+Bears mysteries across the iconostast.
+Three-fingered crosses mark the reverent air,
+As Easter lilies bloom in midnight hours.
+The paschal light, passed hand to hand, ignites
+A constellation moving through the night.
+Bell towers speak in bronze-tongued resonance,
+Their voices carrying past the Carpathians.
+The faithful circle thrice around stone walls,
+Their shadows merging with ancestral ghosts.
+Embroidered cloths drape altars consecrated,
+Where bread and wine transform to divine flesh.
+The painted gaze of martyrs watches still,
+Their sacrifice renewed in liturgy.
+Beneath the arches where the swallows nest,
+The faithful gather, bound by common prayer.
+Each bowed head forms a bridge from earth to sky,
+As timeless rites connect what seems apart.
+            </div>
+        </section>
+
+        <footer>
+            A collection of poetic forms: Sonnet, Villanelle, and Blank Verse
+        </footer>
+    </div>
+
+    <audio id="background-music" loop>
+        <source src="music.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <script>
+        // Toggle between light and dark mode
+        const modeToggle = document.querySelector('.mode-toggle');
+        const modeIcon = document.querySelector('.mode-icon');
+        
+        // Check for saved user preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+        
+        modeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            updateThemeIcon(newTheme);
+        });
+        
+        function updateThemeIcon(theme) {
+            modeIcon.textContent = theme === 'light' ? '☼' : '☽';
+        }
+        
+        // Music player functionality
+        const musicToggle = document.querySelector('.music-toggle');
+        const musicIcon = document.querySelector('.music-icon');
+        const backgroundMusic = document.getElementById('background-music');
+        let isPlaying = false;
+        
+        // Text reveal effect for poems
+        function setupTextReveal() {
+            const poemContents = document.querySelectorAll('.poem-content');
+            
+            poemContents.forEach(content => {
+                // Store original text and clear the element
+                const originalText = content.textContent;
+                content.textContent = '';
+                
+                // Split text into lines and create span elements
+                const lines = originalText.trim().split('\n');
+                lines.forEach(line => {
+                    const lineSpan = document.createElement('span');
+                    lineSpan.textContent = line || ' '; // Use space for empty lines
+                    lineSpan.classList.add('line-reveal');
+                    content.appendChild(lineSpan);
+                    content.appendChild(document.createElement('br'));
+                });
+            });
+            
+            // Create an intersection observer for text lines
+            const lineObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const poem = entry.target;
+                        const lines = Array.from(poem.querySelectorAll('.line-reveal'));
+                        
+                        // Animate lines sequentially
+                        function revealNextLine(index) {
+                            if (index >= lines.length) return;
+                            
+                            lines[index].classList.add('active');
+                            
+                            // Wait for animation to complete before revealing next line
+                            setTimeout(() => {
+                                revealNextLine(index + 1);
+                            }, 600); // Increased delay to 600ms for slower reveal
+                        }
+                        
+                        // Start the sequence
+                        revealNextLine(0);
+                        
+                        // Stop observing this poem
+                        lineObserver.unobserve(poem);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            // Observe all poems
+            document.querySelectorAll('.poem').forEach(poem => {
+                lineObserver.observe(poem);
+            });
+            
+            // Add transitionend handler for each line
+            document.addEventListener('transitionend', function(e) {
+                if (
+                    e.propertyName === 'transform' &&
+                    e.target.classList.contains('line-reveal') &&
+                    e.target.classList.contains('active')
+                ) {
+                    e.target.classList.add('revealed');
+                }
+            }, true);
+        }
+        
+        // Call the text reveal setup after the document is loaded
+        document.addEventListener('DOMContentLoaded', setupTextReveal);
+        
+        musicToggle.addEventListener('click', () => {
+            if (isPlaying) {
+                backgroundMusic.pause();
+                musicIcon.textContent = '♪';
+            } else {
+                backgroundMusic.play().catch(e => {
+                    console.log("Audio play failed, likely due to browser autoplay policy:", e);
+                    // Create a subtle notification for users
+                    const notification = document.createElement('div');
+                    notification.style.position = 'fixed';
+                    notification.style.bottom = '20px';
+                    notification.style.left = '50%';
+                    notification.style.transform = 'translateX(-50%)';
+                    notification.style.padding = '10px 20px';
+                    notification.style.backgroundColor = 'var(--accent-color)';
+                    notification.style.color = 'var(--bg-color)';
+                    notification.style.borderRadius = '5px';
+                    notification.style.zIndex = '1000';
+                    notification.textContent = 'Click anywhere on the page first to enable music';
+                    notification.style.opacity = '0';
+                    notification.style.transition = 'opacity 0.5s ease';
+                    
+                    document.body.appendChild(notification);
+                    setTimeout(() => notification.style.opacity = '1', 10);
+                    setTimeout(() => {
+                        notification.style.opacity = '0';
+                        setTimeout(() => notification.remove(), 500);
+                    }, 3000);
+                    
+                    // Add a one-time click event to start audio
+                    document.addEventListener('click', function startAudio() {
+                        backgroundMusic.play().then(() => {
+                            isPlaying = true;
+                            musicIcon.textContent = '■';
+                        }).catch(e => console.log("Audio still failed:", e));
+                        document.removeEventListener('click', startAudio);
+                    });
+                });
+                musicIcon.textContent = '■';
+            }
+            isPlaying = !isPlaying;
+        });
+        
+        // Save music preference
+        backgroundMusic.addEventListener('play', () => {
+            isPlaying = true;
+            musicIcon.textContent = '■';
+        });
+        
+        backgroundMusic.addEventListener('pause', () => {
+            isPlaying = false;
+            musicIcon.textContent = '♪';
+        });
+        
+        // Add subtle scroll animations
+        const poems = document.querySelectorAll('.poem');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        poems.forEach(poem => {
+            observer.observe(poem);
+        });
+        
+        // Add custom font
+        const fontLink = document.createElement('link');
+        fontLink.href = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&display=swap';
+        fontLink.rel = 'stylesheet';
+        document.head.appendChild(fontLink);
+
+        // Show notification on page load to enable music
+        window.addEventListener('load', () => {
+            const notification = document.createElement('div');
+            notification.style.position = 'fixed';
+            notification.style.bottom = '20px';
+            notification.style.left = '50%';
+            notification.style.transform = 'translateX(-50%)';
+            notification.style.padding = '10px 20px';
+            notification.style.backgroundColor = 'var(--accent-color)';
+            notification.style.color = 'var(--bg-color)';
+            notification.style.borderRadius = '5px';
+            notification.style.zIndex = '1000';
+            notification.textContent = 'Click anywhere on the page first to enable music';
+            notification.style.opacity = '0';
+            notification.style.transition = 'opacity 0.5s ease';
+
+            document.body.appendChild(notification);
+            setTimeout(() => notification.style.opacity = '1', 10);
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+
+            // Add a one-time click event to start audio
+            document.addEventListener('click', function startAudio() {
+                const backgroundMusic = document.getElementById('background-music');
+                backgroundMusic.play().catch(e => console.log("Audio still failed:", e));
+                document.removeEventListener('click', startAudio);
+            });
+        });
+    </script>
+</body>
+</html>
